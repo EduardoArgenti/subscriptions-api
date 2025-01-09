@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from database import get_db
-from repositories.plan_repository import create_plan, get_all_plans, get_plan_by_id
+from repositories.plan_repository import create_plan_with_products, get_all_plans, get_plan_by_id
 from schemas.Plan import PlanCreate, PlanResponse
 from typing import List
 
@@ -9,7 +9,7 @@ router = APIRouter()
 
 @router.post("/plans/", response_model=PlanResponse)
 def create_plan_route(plan: PlanCreate, db: Session = Depends(get_db)):
-    db_plan = create_plan(db, value=plan.value)
+    db_plan = create_plan_with_products(db, value=plan.value, products=plan.products)
     return db_plan
 
 @router.get("/plans/", response_model=List[PlanResponse])

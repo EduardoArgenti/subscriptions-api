@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, Float, ForeignKey
+from sqlalchemy import Column, Integer, String, Float
+from sqlalchemy.orm import relationship
 from database import Base
 
 class Plan(Base):
@@ -6,3 +7,4 @@ class Plan(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True, index=True)
     value = Column(Float, index=True)
+    products = relationship("Product", backref="plan")

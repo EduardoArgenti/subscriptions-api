@@ -6,5 +6,5 @@ class Product(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True, index=True)
     name = Column(String)
-    description = Column(String)
-    plan_id = Column(Integer, ForeignKey("plans.id"))
+    desc = Column(String)
+    plan_id = Column(Integer, ForeignKey("plans.id"), nullable=False)
