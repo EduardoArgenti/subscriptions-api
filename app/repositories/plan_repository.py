@@ -13,18 +13,19 @@ def create_plan(db: Session, value: float) -> Plan:
 
 def create_plan_with_products(db: Session, value: float, products: List[ProductCreate]) -> Plan:
     db_plan = Plan(value=value)
-    db.add(db_plan)
-    db.commit()
-    db.refresh(db_plan)
 
-    for product in products:
-        db_product = Product(
+    db_products = [
+        Product(
             name=product.name,
             desc=product.desc,
             plan_id=db_plan.id,
         )
-        db.add(db_product)
+        for product in products
+    ]
 
+    db_plan.products = db_products
+
+    db.add(db_plan)
     db.commit()
     db.refresh(db_plan)
 
