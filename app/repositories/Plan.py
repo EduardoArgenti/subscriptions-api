@@ -6,13 +6,6 @@ from schemas.Product import ProductCreate
 from fastapi import HTTPException
 from datetime import datetime
 
-def create_plan(db: Session, value: float) -> Plan:
-    db_plan = Plan(value=value)
-    db.add(db_plan)
-    db.commit()
-    db.refresh(db_plan)
-    return db_plan
-
 def get_all_plans(db: Session, skip: int = 0, limit: int = 10) -> List[Plan]:
     return db.query(Plan).offset(skip).limit(limit).all()
 
