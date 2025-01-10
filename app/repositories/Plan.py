@@ -37,7 +37,7 @@ class PlanRepository:
         return db_plan
 
     @staticmethod
-    def add_products_to_plans(db: Session, id: int, products: List[ProductCreate]) -> Plan:
+    def add_products_to_plan(db: Session, id: int, products: List[ProductCreate]) -> Plan:
         db_plan = db.query(Plan).filter(Plan.id == id).first()
 
         if not db_plan:
@@ -60,7 +60,7 @@ class PlanRepository:
         return db_plan
 
     @staticmethod
-    def remove_products_from_plans(db: Session, id: int, products_ids: List[int]) -> Plan:
+    def remove_products_from_plan(db: Session, id: int, products_ids: List[int]) -> Plan:
         db_plan = db.query(Plan).filter(Plan.id == id).first()
 
         if not db_plan:
