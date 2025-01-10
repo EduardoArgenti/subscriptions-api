@@ -73,6 +73,9 @@ def remove_products_from_plans(db: Session, id: int, products_ids: List[int]) ->
         if not db_product:
             raise HTTPException(status_code=404, detail=f"Product with ID {product_id} not found")
 
+        if db_product.active == False:
+            continue
+
         db_product.updated_at = datetime.utcnow()
         db_product.active = False
         db.add(db_product)
