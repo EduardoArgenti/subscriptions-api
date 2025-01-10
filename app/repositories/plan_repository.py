@@ -39,24 +39,43 @@ def create_plan_with_products(db: Session, value: float, products: List[ProductC
 
     return db_plan
 
-def add_products_to_plans(db: Session, id: int, products: List[ProductCreate], mode: str) -> Plan:
+def add_products_to_plans(db: Session, id: int, products: List[ProductCreate]) -> Plan:
     db_plan = db.query(Plan).filter(Plan.id == id).first()
 
     if not db_plan:
         raise HTTPException(status_code=404, detail=f"Plan with ID {id} not found")
 
-    if mode == "add":
-        for product in products:
-            db_product = Product(
-                name=product.name,
-                desc=product.desc,
-                plan_id=db_plan.id
-            )
-            db.add(db_product)
-    elif mode == "delete":
-        pass
-    else:
-        raise HTTPException(status_code=400, detail="Invalid mode. Use 'add' or 'delete'.")
+    for product in products:
+        db_product = Product(
+            name=product.name,
+            desc=product.desc,
+            plan_id=db_plan.id
+        )
+        db.add(db_product)
+
+    db_plan.updated_at = datetime.utcnow()
+    db.add(db_plan)
+
+    db.commit()
+    db.refresh(db_plan)
+
+    return db_plan
+
+def remove_products_from_plans(db: Session, id: int, products_ids: List[int]) -> Plan:
+    db_plan = db.query(Plan).filter(Plan.id == id).first()
+
+    if not db_plan:
+        raise HTTPException(status_code=404, detail=f"Plan with ID {id} not found")
+
+    for product_id in products_ids:
+        db_product = db.query(Product).filter(Product.id == product_id).first()
+
+        if not db_product:
+            raise HTTPException(status_code=404, detail=f"Product with ID {product_id} not found")
+
+        db_product.updated_at = datetime.utcnow()
+        db_product.active = False
+        db.add(db_product)
 
     db_plan.updated_at = datetime.utcnow()
     db.add(db_plan)
